@@ -1,0 +1,3 @@
+[submodule "gnet"]
+	path = gnet
+	url = https://github.com/panjf2000/gnet
