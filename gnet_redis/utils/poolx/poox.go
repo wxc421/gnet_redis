@@ -26,7 +26,7 @@ func NewPoolNormal[T any](fn func() T) Pool[T] {
 }
 
 func (p *PoolNormal[T]) Get() T {
-	return p.pool.Get()
+	return p.pool.Get().(T)
 }
 
 func (p *PoolNormal[T]) Put(t T) {

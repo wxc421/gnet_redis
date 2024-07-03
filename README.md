@@ -14,7 +14,8 @@ https://iphysresearch.github.io/blog/post/programing/git/git_submodule/
 
 ```bash
 # 添加gnet子模块
-$ git submodule add https://github.com/panjf2000/gnet gnet
+$ git rm -f --cached gnet
+$ git submodule add https://github.com/wxc421/gnet gnet
 ```
 
 ## 📖 简介
