@@ -85,7 +85,7 @@ func (e *SuccessReply) ToBytes() []byte {
 	return []byte("+" + OK + CRLF)
 }
 
-// 定长字符串类型，协议固定为 【$】【length】【CRLF】【content】【CRLF】
+// BulkReply 定长字符串类型，协议固定为 【$】【length】【CRLF】【content】【CRLF】
 type BulkReply struct {
 	Arg []byte
 }

@@ -35,14 +35,16 @@ func (handler *Handler) HandleDroplet(conn gnet.Conn, droplets []*model.Droplet)
 			return errors.New(fmt.Sprintf("[handler]conn invalid request: %s", droplet.Reply.ToBytes()))
 		}
 		receiver := make(database.CmdReceiver, 1)
-		command := database.NewCommand(
-			database.CmdType(multiReply.Args()[0]),
-			context.Background(),
-			multiReply.Args(),
-			receiver,
-		)
+		// get from pool
+		command := database.GetCommand().
+			SetCmdType(database.CmdType(multiReply.Args()[0])).
+			SetCtx(context.Background()).
+			SetArgs(multiReply.Args()).
+			SetReceiver(receiver)
 		handler.dbTrigger.EnCommand(command)
 		reply := <-command.Receiver()
+		// put for reuse
+		database.PutCommand(command)
 		_, _ = conn.Write(reply.ToBytes())
 	}
 	return nil

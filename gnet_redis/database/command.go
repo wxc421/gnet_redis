@@ -3,12 +3,29 @@ package database
 import (
 	"context"
 	"gnet_redis/model"
+	"gnet_redis/utils/poolx"
 	"strings"
 )
 
 type CmdType string
 
 type CmdReceiver chan model.Reply
+
+var commandPool = poolx.NewPoolNormal[*Command](func() *Command {
+	return &Command{}
+})
+
+func GetCommand() *Command {
+	command := commandPool.Get()
+	return command
+}
+
+func PutCommand(command *Command) {
+	command.ctx = nil
+	command.receiver = nil
+	command.args = nil
+	commandPool.Put(command)
+}
 
 func (c CmdType) String() string {
 	return strings.ToLower(string(c))
@@ -23,6 +40,26 @@ type Command struct {
 	ctx      context.Context
 	args     [][]byte
 	receiver CmdReceiver
+}
+
+func (c *Command) SetCmdType(cmdType CmdType) *Command {
+	c.cmdType = cmdType
+	return c
+}
+
+func (c *Command) SetCtx(ctx context.Context) *Command {
+	c.ctx = ctx
+	return c
+}
+
+func (c *Command) SetArgs(args [][]byte) *Command {
+	c.args = args
+	return c
+}
+
+func (c *Command) SetReceiver(receiver CmdReceiver) *Command {
+	c.receiver = receiver
+	return c
 }
 
 func NewCommand(cmdType CmdType, ctx context.Context, args [][]byte, receiver CmdReceiver) *Command {
