@@ -1,3 +1,5 @@
+//go:build linux
+
 package main
 
 import (
@@ -104,7 +106,6 @@ func (server *RedisServer) Run() error {
 }
 
 func main() {
-
 	pool, err := ants.NewPool(ants.DefaultAntsPoolSize)
 	if err != nil {
 		log.Fatal(err)
