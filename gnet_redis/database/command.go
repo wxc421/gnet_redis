@@ -42,6 +42,10 @@ type Command struct {
 	receiver CmdReceiver
 }
 
+func (c *Command) Args() [][]byte {
+	return c.args
+}
+
 func (c *Command) SetCmdType(cmdType CmdType) *Command {
 	c.cmdType = cmdType
 	return c

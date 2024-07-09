@@ -73,6 +73,32 @@ func (e *ErrReply) ToBytes() []byte {
 	return []byte("-" + e.ErrStr + CRLF)
 }
 
+// NilReply nil 类型，采用全局单例，格式固定为 【$】【-1】【CRLF】
+type NilReply struct {
+}
+
+func NewNilReply() *NilReply {
+	return &NilReply{}
+}
+
+func (n *NilReply) ToBytes() []byte {
+	return nilBulkBytes
+}
+
+// SyntaxErrReply 参数语法错误
+type SyntaxErrReply struct{}
+
+var syntaxErrBytes = []byte("-Err syntax error\r\n")
+var theSyntaxErrReply = &SyntaxErrReply{}
+
+func NewSyntaxErrReply() *SyntaxErrReply {
+	return theSyntaxErrReply
+}
+
+func (r *SyntaxErrReply) ToBytes() []byte {
+	return syntaxErrBytes
+}
+
 // SuccessReply success Reply
 type SuccessReply struct {
 }

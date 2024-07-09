@@ -15,12 +15,12 @@ type Executor struct {
 
 func NewExecutor() *Executor {
 	e := Executor{
-		database: NewDataBase(),
+		database: NewKVStore(),
 	}
 	e.cmdHandlers = map[CmdType]CmdHandler{
 		// string
 		CmdTypeGet: e.database.Get,
-		CmdTypeSet: e.database.Get,
+		CmdTypeSet: e.database.Set,
 	}
 	return &e
 }

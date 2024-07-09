@@ -39,7 +39,7 @@ func (handler *Handler) HandleDroplet(conn gnet.Conn, droplets []*model.Droplet)
 		command := database.GetCommand().
 			SetCmdType(database.CmdType(multiReply.Args()[0])).
 			SetCtx(context.Background()).
-			SetArgs(multiReply.Args()).
+			SetArgs(multiReply.Args()[1:]).
 			SetReceiver(receiver)
 		handler.dbTrigger.EnCommand(command)
 		reply := <-command.Receiver()

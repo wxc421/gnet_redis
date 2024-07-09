@@ -106,14 +106,21 @@ func (server *RedisServer) Run() error {
 }
 
 func main() {
-	pool, err := ants.NewPool(ants.DefaultAntsPoolSize)
-	if err != nil {
-		log.Fatal(err)
-	}
+
 	server := &RedisServer{
 		parser:  parser.NewParser(),
 		handler: handler.NewHandler(),
-		pool:    pool,
 	}
+	pool, err := ants.NewPool(ants.DefaultAntsPoolSize, ants.WithPanicHandler(func(i interface{}) {
+		if server.eng != nil {
+			slog.Info("in panic start close eng")
+			_ = server.eng.Stop(context.Background())
+			server.pool.Release()
+		}
+	}))
+	if err != nil {
+		log.Fatal(err)
+	}
+	server.pool = pool
 	log.Fatal(server.Run())
 }
